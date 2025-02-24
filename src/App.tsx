@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Navigation from "./components/Navigation";
 import Breadcrumbs from "./components/Breadcrumbs";
+import AdminPanel from "./components/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +21,7 @@ const App = () => {
               <Route path="/catalog" element={<div>Catalog</div>} />
               <Route path="/catalog/female" element={<div>Female Catalog</div>} />
               <Route path="/catalog/male" element={<div>Male Catalog</div>} />
-              <Route path="/admin" element={<div>Admin</div>} />
+              <Route path="/admin" element={<AdminPanel />} />
               <Route path="/product/:id" element={<div>Product Details</div>} />
               <Route path="*" element={<div>404</div>} />
             </Routes>
