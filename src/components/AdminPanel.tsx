@@ -318,27 +318,19 @@ const AdminPanel = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Género</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona un género" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="male">Masculino</SelectItem>
-                          <SelectItem value="female">Femenino</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <Select onValueChange={(value) => field.onChange(value)} value={field.value || ""}>
+              <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona un género" />
+               </SelectTrigger>
+              </FormControl>
+  <SelectContent>
+    <SelectItem value="male">Masculino</SelectItem>
+    <SelectItem value="female">Femenino</SelectItem>
+  </SelectContent>
+</Select>
+<FormMessage />
+
                 <Button type="submit" className="w-full">
                   {selectedProduct ? "Actualizar" : "Crear"}
                 </Button>
