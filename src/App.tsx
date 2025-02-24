@@ -1,27 +1,35 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import Navigation from "./components/Navigation";
+import Breadcrumbs from "./components/Breadcrumbs";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div className="min-h-screen bg-gray-50">
+          <Navigation />
+          <Breadcrumbs />
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            <Routes>
+              <Route path="/" element={<div>Home</div>} />
+              <Route path="/catalog" element={<div>Catalog</div>} />
+              <Route path="/catalog/female" element={<div>Female Catalog</div>} />
+              <Route path="/catalog/male" element={<div>Male Catalog</div>} />
+              <Route path="/admin" element={<div>Admin</div>} />
+              <Route path="/product/:id" element={<div>Product Details</div>} />
+              <Route path="*" element={<div>404</div>} />
+            </Routes>
+          </main>
+        </div>
+        <Toaster />
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;
