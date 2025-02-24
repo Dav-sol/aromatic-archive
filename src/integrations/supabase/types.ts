@@ -9,7 +9,144 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      fragrance_notes: {
+        Row: {
+          description: string
+          id: string
+          note_type: string
+          product_id: string | null
+        }
+        Insert: {
+          description: string
+          id?: string
+          note_type: string
+          product_id?: string | null
+        }
+        Update: {
+          description?: string
+          id?: string
+          note_type?: string
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fragrance_notes_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_images: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          id: string
+          image_url: string
+          product_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url: string
+          product_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          brand: string
+          created_at: string | null
+          description: string | null
+          gender: Database["public"]["Enums"]["gender"]
+          id: string
+          is_on_sale: boolean | null
+          name: string
+          price: number
+          sale_price: number | null
+          stock: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          brand: string
+          created_at?: string | null
+          description?: string | null
+          gender: Database["public"]["Enums"]["gender"]
+          id?: string
+          is_on_sale?: boolean | null
+          name: string
+          price: number
+          sale_price?: number | null
+          stock?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          brand?: string
+          created_at?: string | null
+          description?: string | null
+          gender?: Database["public"]["Enums"]["gender"]
+          id?: string
+          is_on_sale?: boolean | null
+          name?: string
+          price?: number
+          sale_price?: number | null
+          stock?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          id: string
+          product_id: string | null
+          rating: number
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          rating: number
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          rating?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +155,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      gender: "male" | "female"
     }
     CompositeTypes: {
       [_ in never]: never
