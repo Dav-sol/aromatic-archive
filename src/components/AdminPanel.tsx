@@ -55,8 +55,8 @@ const productSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
   brand: z.string().min(1, "La marca es requerida"),
   description: z.string().optional(),
-  price: z.string().transform(Number),
-  stock: z.string().transform(Number),
+  price: z.coerce.number().min(0, "El precio debe ser mayor a 0"),
+  stock: z.coerce.number().min(0, "El stock debe ser mayor o igual a 0"),
   gender: z.enum(["male", "female"]),
 });
 
@@ -74,8 +74,8 @@ const AdminPanel = () => {
       name: "",
       brand: "",
       description: "",
-      price: "",
-      stock: "",
+      price: 0,
+      stock: 0,
       gender: "male",
     },
   });
@@ -105,7 +105,14 @@ const AdminPanel = () => {
     mutationFn: async (values: ProductFormValues) => {
       const { data, error } = await supabase
         .from('products')
-        .insert([values])
+        .insert({
+          name: values.name,
+          brand: values.brand,
+          description: values.description,
+          price: values.price,
+          stock: values.stock,
+          gender: values.gender,
+        })
         .select()
         .single();
 
@@ -134,7 +141,14 @@ const AdminPanel = () => {
     mutationFn: async ({ id, ...values }: ProductFormValues & { id: string }) => {
       const { data, error } = await supabase
         .from('products')
-        .update(values)
+        .update({
+          name: values.name,
+          brand: values.brand,
+          description: values.description,
+          price: values.price,
+          stock: values.stock,
+          gender: values.gender,
+        })
         .eq('id', id)
         .select()
         .single();
@@ -200,8 +214,8 @@ const AdminPanel = () => {
       name: product.name,
       brand: product.brand,
       description: product.description || "",
-      price: String(product.price),
-      stock: String(product.stock),
+      price: product.price,
+      stock: product.stock,
       gender: product.gender,
     });
     setIsOpen(true);
