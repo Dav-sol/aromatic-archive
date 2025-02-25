@@ -4,8 +4,10 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Heart, Share2, ArrowLeft } from 'lucide-react';
+import { ShoppingCart, Heart, Share2, ArrowLeft, Droplet } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,9 +35,25 @@ const ProductDetail = () => {
         
       if (imagesError) throw imagesError;
       
+      // Obtener las notas de fragancia
+      const { data: notesData, error: notesError } = await supabase
+        .from('fragrance_notes')
+        .select('*')
+        .eq('product_id', id);
+        
+      if (notesError) throw notesError;
+      
+      // Organizar las notas por tipo
+      const notes = {
+        top: notesData?.filter(note => note.note_type === 'top') || [],
+        middle: notesData?.filter(note => note.note_type === 'middle') || [],
+        base: notesData?.filter(note => note.note_type === 'base') || []
+      };
+      
       return {
         ...productData,
-        images: imagesData?.map(img => img.image_url) || []
+        images: imagesData?.map(img => img.image_url) || [],
+        notes
       };
     },
   });
@@ -60,6 +78,31 @@ const ProductDetail = () => {
       title: "Enlace copiado",
       description: "El enlace del producto ha sido copiado al portapapeles.",
     });
+  };
+  
+  // Función para renderizar las notas de fragancia con su tipo
+  const renderNotes = (notes, type) => {
+    if (!notes || notes.length === 0) return null;
+    
+    const typeLabels = {
+      top: 'Notas de Salida',
+      middle: 'Notas de Corazón',
+      base: 'Notas de Fondo'
+    };
+    
+    return (
+      <div>
+        <h4 className="font-medium text-sm">{typeLabels[type]}</h4>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {notes.map((note) => (
+            <Badge key={note.id} variant="outline" className="flex items-center gap-1">
+              <Droplet className="h-3 w-3" />
+              {note.description}
+            </Badge>
+          ))}
+        </div>
+      </div>
+    );
   };
   
   if (isLoading) {
@@ -140,17 +183,40 @@ const ProductDetail = () => {
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold">{product.name}</h1>
-            <p className="text-xl font-semibold mt-2">${product.price}</p>
+            <p className="text-xl font-semibold mt-2">
+              {product.is_on_sale && product.sale_price ? (
+                <>
+                  <span className="line-through text-muted-foreground mr-2">${product.price}</span>
+                  <span className="text-red-600">${product.sale_price}</span>
+                </>
+              ) : (
+                `$${product.price}`
+              )}
+            </p>
             <p className="text-sm text-muted-foreground mt-1">
               Marca: {product.brand}
             </p>
           </div>
           
+          {/* Descripción */}
           <div className="py-4 border-t border-b">
             <h3 className="font-medium mb-2">Descripción</h3>
             <p className="text-muted-foreground">{product.description}</p>
           </div>
           
+          {/* Notas de Fragancia */}
+          {(product.notes?.top?.length > 0 || product.notes?.middle?.length > 0 || product.notes?.base?.length > 0) && (
+            <div className="py-4 border-b">
+              <h3 className="font-medium mb-3">Notas de Fragancia</h3>
+              <div className="space-y-4">
+                {renderNotes(product.notes.top, 'top')}
+                {renderNotes(product.notes.middle, 'middle')}
+                {renderNotes(product.notes.base, 'base')}
+              </div>
+            </div>
+          )}
+          
+          {/* Información adicional */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center space-x-2">
               <div className="w-24">Stock:</div>
@@ -165,6 +231,7 @@ const ProductDetail = () => {
             </div>
           </div>
           
+          {/* Botones de acción */}
           <div className="flex space-x-4 pt-4">
             <Button 
               size="lg" 

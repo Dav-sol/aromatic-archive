@@ -1,4 +1,5 @@
 
+import { Link } from "react-router-dom";
 import { Product } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -8,7 +9,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   return (
-    <div className="group relative">
+    <Link to={`/product/${product.id}`} className="group relative block">
       <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
         <img
           src={product.images[0]}
@@ -40,7 +41,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
