@@ -40,7 +40,7 @@ const CatalogView = ({ gender }: CatalogProps) => {
         .from('products')
         .select(`
           *,
-          product_images!inner(*)
+          product_images(*)
         `);
       
       // Filtrar por género si está especificado
@@ -80,25 +80,21 @@ const CatalogView = ({ gender }: CatalogProps) => {
         throw error;
       }
       
-      // Agrupar las imágenes por producto
-      const productsMap: Record<string, any> = {};
-      
-      data.forEach(item => {
-        const productId = item.id;
+      // Procesar y transformar los datos para adaptarlos al formato esperado
+      const processedProducts = data.map(product => {
+        // Extraer las URLs de las imágenes del array product_images
+        const images = product.product_images
+          ? product.product_images.map((img: { image_url: string }) => img.image_url)
+          : [];
         
-        if (!productsMap[productId]) {
-          productsMap[productId] = {
-            ...item,
-            images: []
-          };
-        }
-        
-        if (item.product_images && item.product_images.image_url) {
-          productsMap[productId].images.push(item.product_images.image_url);
-        }
+        // Retornar el producto con el formato adecuado
+        return {
+          ...product,
+          images
+        };
       });
       
-      return Object.values(productsMap);
+      return processedProducts;
     },
   });
   
