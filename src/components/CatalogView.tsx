@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import ProductGrid from './ProductGrid';
+import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -81,16 +82,23 @@ const CatalogView = ({ gender }: CatalogProps) => {
       }
       
       // Procesar y transformar los datos para adaptarlos al formato esperado
-      const processedProducts = data.map(product => {
+      const processedProducts: Product[] = data.map(product => {
         // Extraer las URLs de las imágenes del array product_images
         const images = product.product_images
           ? product.product_images.map((img: { image_url: string }) => img.image_url)
           : [];
         
-        // Retornar el producto con el formato adecuado
+        // Mapear el producto a la interfaz Product
         return {
-          ...product,
-          images
+          id: product.id,
+          name: product.name,
+          brand: product.brand,
+          category: product.gender, // Mapear gender a category
+          description: product.description || '',
+          price: product.price,
+          salePrice: product.sale_price || undefined,
+          images: images,
+          isOnSale: product.is_on_sale || false
         };
       });
       
