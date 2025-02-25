@@ -2,7 +2,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
 
@@ -36,7 +36,7 @@
 }
 
 .luxury-gradient {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
+  background: linear-gradient(90deg, rgb(23, 207, 215) 0%, rgb(132, 94, 241) 100%);
 }
 
 .gold-text {
@@ -48,9 +48,10 @@
 }
 
 .luxury-card {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.9);
   border: 1px solid rgba(212, 175, 55, 0.3);
   transition: all 0.3s ease;
+  border-radius: 0;
 }
 
 .luxury-card:hover {
@@ -58,26 +59,140 @@
   box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
 }
 
-/* Hero section con efecto de perfume */
-.hero-luxury {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)),
-              url('/public/lovable-uploads/2c6dbf7f-9cac-486c-9875-538bbfb09192.png') center/contain no-repeat;
-  background-position: center;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+.gradient-header {
+  background: linear-gradient(90deg, rgb(23, 207, 215) 0%, rgb(132, 94, 241) 100%);
+  padding: 1rem 0;
+  color: white;
 }
 
-.hero-luxury::after {
+.black-section {
+  background-color: #111111;
+  padding: 3rem 0;
+  color: white;
+}
+
+.category-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.category-card {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-size: cover;
+  background-position: center;
+}
+
+.category-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.2) 100%);
+  z-index: 1;
+}
+
+.category-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.category-title {
+  font-family: 'Playfair Display', serif;
+  color: #D4AF37;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.category-description {
+  color: white;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.circular-button {
+  display: inline-block;
+  color: #D4AF37;
+  border: 1px solid #D4AF37;
+  border-radius: 9999px;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.circular-button:hover {
+  background-color: #D4AF37;
+  color: black;
+}
+
+.hero-luxury {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background-color: #111111;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  padding: 0 2rem;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  color: #D4AF37;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: white;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.golden-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+  width: 80%;
+  margin: 2rem auto;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  color: #D4AF37;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 /* Botón elegante con borde dorado */
@@ -87,6 +202,8 @@
   color: #D4AF37;
   padding: 0.5rem 1.5rem;
   transition: all 0.3s ease;
+  font-size: 0.875rem;
+  cursor: pointer;
 }
 
 .button-luxury:hover {
