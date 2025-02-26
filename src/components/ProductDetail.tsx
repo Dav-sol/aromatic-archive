@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Droplet } from 'lucide-react';
+import { ArrowLeft, Droplet, MessageCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const ProductDetail = () => {
@@ -54,6 +54,18 @@ const ProductDetail = () => {
       };
     },
   });
+
+  // Función para generar el enlace de WhatsApp
+  const generateWhatsAppLink = () => {
+    if (!product) return '#';
+    
+    const phoneNumber = '5491112345678'; // Reemplaza esto con tu número real
+    const message = encodeURIComponent(
+      `Hola, estoy interesado/a en el perfume ${product.name} (${product.brand}). ¿Podrías darme más información?`
+    );
+    
+    return `https://wa.me/${phoneNumber}?text=${message}`;
+  };
   
   // Función para renderizar las notas de fragancia con su tipo
   const renderNotes = (notes, type) => {
@@ -205,6 +217,18 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
+
+          {/* Botón de WhatsApp */}
+          <Button 
+            className="w-full mt-4" 
+            size="lg" 
+            asChild
+          >
+            <a href={generateWhatsAppLink()} target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="mr-2 h-5 w-5" />
+              Consultar por WhatsApp
+            </a>
+          </Button>
         </div>
       </div>
     </div>

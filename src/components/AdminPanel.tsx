@@ -50,6 +50,14 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+const FragranceNoteSchema = z.object({
+  description: z.string().min(1, "La descripción de la nota es requerida"),
+  note_type: z.enum(["top", "middle", "base"], {
+    required_error: "El tipo de nota es requerido",
+  }),
+});
 
 const productSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -63,6 +71,7 @@ const productSchema = z.object({
     url: z.string().optional(),
     id: z.string().optional(),
   })).optional().default([]),
+  fragranceNotes: z.array(FragranceNoteSchema).optional().default([]),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -74,6 +83,7 @@ const AdminPanel = () => {
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newNote, setNewNote] = useState({ description: "", note_type: "top" });
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -85,6 +95,7 @@ const AdminPanel = () => {
       stock: 0,
       gender: "male",
       images: [],
+      fragranceNotes: [],
     },
   });
 
@@ -198,6 +209,55 @@ const AdminPanel = () => {
     form.setValue('images', newImages);
   };
 
+  const addFragranceNote = () => {
+    if (!newNote.description.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "La descripción de la nota no puede estar vacía",
+      });
+      return;
+    }
+
+    const currentNotes = form.getValues('fragranceNotes') || [];
+    form.setValue('fragranceNotes', [...currentNotes, { ...newNote }]);
+    setNewNote({ description: "", note_type: "top" });
+  };
+
+  const removeFragranceNote = (index: number) => {
+    const currentNotes = form.getValues('fragranceNotes') || [];
+    const newNotes = [...currentNotes];
+    newNotes.splice(index, 1);
+    form.setValue('fragranceNotes', newNotes);
+  };
+
+  const saveFragranceNotes = async (productId: string, notes: any[]) => {
+    if (!notes || notes.length === 0) return;
+
+    try {
+      // Primero eliminar notas existentes para este producto
+      await supabase
+        .from('fragrance_notes')
+        .delete()
+        .eq('product_id', productId);
+
+      // Luego insertar las nuevas notas
+      const notesWithProductId = notes.map(note => ({
+        ...note,
+        product_id: productId
+      }));
+
+      const { error } = await supabase
+        .from('fragrance_notes')
+        .insert(notesWithProductId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error al guardar notas de fragancia:', error);
+      throw error;
+    }
+  };
+
   const createProduct = useMutation({
     mutationFn: async (values: ProductFormValues) => {
       setIsUploading(true);
@@ -222,11 +282,16 @@ const AdminPanel = () => {
         if (values.images && values.images.length > 0) {
           const imagePromises = values.images
             .filter((img) => img.file) // Solo procesar archivos nuevos
-            .map((img, index) => 
+            .map((img) => 
               uploadImage(img.file as File, product.id)
             );
 
           await Promise.all(imagePromises);
+        }
+
+        // 3. Guardar notas de fragancia si hay alguna
+        if (values.fragranceNotes && values.fragranceNotes.length > 0) {
+          await saveFragranceNotes(product.id, values.fragranceNotes);
         }
 
         return product;
@@ -286,6 +351,9 @@ const AdminPanel = () => {
           }
         }
 
+        // 3. Actualizar notas de fragancia
+        await saveFragranceNotes(id, values.fragranceNotes || []);
+
         return product;
       } finally {
         setIsUploading(false);
@@ -312,7 +380,13 @@ const AdminPanel = () => {
 
   const deleteProduct = useMutation({
     mutationFn: async (id: string) => {
-      // 1. Primero eliminar las imágenes
+      // 1. Primero eliminar las notas de fragancia
+      await supabase
+        .from('fragrance_notes')
+        .delete()
+        .eq('product_id', id);
+
+      // 2. Eliminar las imágenes
       const { data: images } = await supabase
         .from('product_images')
         .select('*')
@@ -329,7 +403,7 @@ const AdminPanel = () => {
         // pero esto requeriría más trabajo de listar y eliminar
       }
 
-      // 2. Eliminar el producto
+      // 3. Eliminar el producto
       const { error } = await supabase
         .from('products')
         .delete()
@@ -365,20 +439,36 @@ const AdminPanel = () => {
     setSelectedProduct(product);
     
     // Cargar las imágenes del producto
-    const { data: images, error } = await supabase
+    const { data: images, error: imagesError } = await supabase
       .from('product_images')
       .select('*')
       .eq('product_id', product.id)
       .order('display_order', { ascending: true });
       
-    if (error) {
-      console.error("Error al cargar imágenes:", error);
+    if (imagesError) {
+      console.error("Error al cargar imágenes:", imagesError);
+    }
+    
+    // Cargar notas de fragancia
+    const { data: fragranceNotes, error: notesError } = await supabase
+      .from('fragrance_notes')
+      .select('*')
+      .eq('product_id', product.id);
+      
+    if (notesError) {
+      console.error("Error al cargar notas de fragancia:", notesError);
     }
     
     // Mapear imágenes para el formulario
     const formattedImages = images ? images.map(img => ({
       id: img.id,
       url: img.image_url
+    })) : [];
+    
+    // Formatear notas de fragancia para el formulario
+    const formattedNotes = fragranceNotes ? fragranceNotes.map(note => ({
+      description: note.description,
+      note_type: note.note_type
     })) : [];
     
     form.reset({
@@ -389,9 +479,19 @@ const AdminPanel = () => {
       stock: product.stock,
       gender: product.gender,
       images: formattedImages,
+      fragranceNotes: formattedNotes,
     });
     
     setIsOpen(true);
+  };
+
+  const getNoteTypeLabel = (type: string) => {
+    const labels = {
+      top: "Salida",
+      middle: "Corazón",
+      base: "Fondo"
+    };
+    return labels[type as keyof typeof labels] || type;
   };
 
   if (isLoading) {
@@ -420,13 +520,14 @@ const AdminPanel = () => {
                 stock: 0,
                 gender: "male",
                 images: [],
+                fragranceNotes: [],
               });
             }}>
               <Plus className="mr-2 h-4 w-4" />
               Nuevo Producto
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {selectedProduct ? "Editar Producto" : "Nuevo Producto"}
@@ -434,137 +535,220 @@ const AdminPanel = () => {
             </DialogHeader>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nombre</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="brand"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Marca</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descripción</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Precio</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="stock"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Stock</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Género</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona un género" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="male">Masculino</SelectItem>
-                          <SelectItem value="female">Femenino</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                {/* Sección de imágenes */}
-                <div>
-                  <FormLabel>Imágenes</FormLabel>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
+                <Tabs defaultValue="general">
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="general">Información General</TabsTrigger>
+                    <TabsTrigger value="images">Imágenes</TabsTrigger>
+                    <TabsTrigger value="fragrance">Notas de Fragancia</TabsTrigger>
+                  </TabsList>
                   
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    {form.watch('images')?.map((image, index) => (
-                      <div key={index} className="relative aspect-square border rounded-md overflow-hidden group">
-                        <img src={image.url} alt="Preview" className="w-full h-full object-cover" />
+                  <TabsContent value="general">
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nombre</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="brand"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Marca</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Descripción</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="price"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Precio</FormLabel>
+                            <FormControl>
+                              <Input type="number" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="stock"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Stock</FormLabel>
+                            <FormControl>
+                              <Input type="number" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Género</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecciona un género" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="male">Masculino</SelectItem>
+                              <SelectItem value="female">Femenino</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="images">
+                    <div>
+                      <FormLabel>Imágenes</FormLabel>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      
+                      <div className="grid grid-cols-3 gap-2 mt-2">
+                        {form.watch('images')?.map((image, index) => (
+                          <div key={index} className="relative aspect-square border rounded-md overflow-hidden group">
+                            <img src={image.url} alt="Preview" className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
                         <button
                           type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center justify-center aspect-square border border-dashed rounded-md text-gray-400 hover:text-gray-600 hover:border-gray-400 transition-colors"
                         >
-                          <X className="h-3 w-3" />
+                          <Upload className="h-6 w-6" />
                         </button>
                       </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center justify-center aspect-square border border-dashed rounded-md text-gray-400 hover:text-gray-600 hover:border-gray-400 transition-colors"
-                    >
-                      <Upload className="h-6 w-6" />
-                    </button>
-                  </div>
-                </div>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="fragrance">
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-sm font-medium mb-2">Añadir nueva nota</h3>
+                        <div className="flex gap-2">
+                          <div className="flex-1">
+                            <Input
+                              placeholder="Descripción de la nota"
+                              value={newNote.description}
+                              onChange={(e) => setNewNote({...newNote, description: e.target.value})}
+                            />
+                          </div>
+                          <Select 
+                            value={newNote.note_type}
+                            onValueChange={(value) => setNewNote({...newNote, note_type: value as "top" | "middle" | "base"})}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="Tipo de nota" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="top">Nota de Salida</SelectItem>
+                              <SelectItem value="middle">Nota de Corazón</SelectItem>
+                              <SelectItem value="base">Nota de Fondo</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button type="button" onClick={addFragranceNote}>
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Lista de notas añadidas */}
+                      <div>
+                        <h3 className="text-sm font-medium mb-2">Notas añadidas</h3>
+                        <div className="border rounded-md overflow-hidden">
+                          {form.watch('fragranceNotes')?.length > 0 ? (
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Descripción</TableHead>
+                                  <TableHead>Tipo</TableHead>
+                                  <TableHead className="w-[100px]">Acción</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {form.watch('fragranceNotes')?.map((note, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell>{note.description}</TableCell>
+                                    <TableCell>{getNoteTypeLabel(note.note_type)}</TableCell>
+                                    <TableCell>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => removeFragranceNote(index)}
+                                      >
+                                        <Trash2 className="h-4 w-4 text-red-500" />
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          ) : (
+                            <div className="py-6 text-center text-muted-foreground">
+                              No hay notas de fragancia añadidas
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
                 
                 <Button type="submit" className="w-full" disabled={isUploading}>
-                  {isUploading ? "Subiendo..." : (selectedProduct ? "Actualizar" : "Crear")}
+                  {isUploading ? "Guardando..." : (selectedProduct ? "Actualizar" : "Crear")}
                 </Button>
               </form>
             </Form>
