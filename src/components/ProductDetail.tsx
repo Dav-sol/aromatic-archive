@@ -4,14 +4,11 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Heart, Share2, ArrowLeft, Droplet } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { Separator } from '@/components/ui/separator';
+import { ArrowLeft, Droplet } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { toast } = useToast();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
   const { data: product, isLoading } = useQuery({
@@ -57,28 +54,6 @@ const ProductDetail = () => {
       };
     },
   });
-  
-  const handleAddToCart = () => {
-    toast({
-      title: "Añadido al carrito",
-      description: `${product?.name} ha sido añadido a tu carrito.`,
-    });
-  };
-  
-  const handleAddToWishlist = () => {
-    toast({
-      title: "Añadido a favoritos",
-      description: `${product?.name} ha sido añadido a tus favoritos.`,
-    });
-  };
-  
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Enlace copiado",
-      description: "El enlace del producto ha sido copiado al portapapeles.",
-    });
-  };
   
   // Función para renderizar las notas de fragancia con su tipo
   const renderNotes = (notes, type) => {
@@ -229,35 +204,6 @@ const ProductDetail = () => {
                 {product.gender === 'male' ? 'Masculino' : 'Femenino'}
               </div>
             </div>
-          </div>
-          
-          {/* Botones de acción */}
-          <div className="flex space-x-4 pt-4">
-            <Button 
-              size="lg" 
-              className="flex-1"
-              onClick={handleAddToCart}
-              disabled={product.stock <= 0}
-            >
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              Añadir al carrito
-            </Button>
-            
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={handleAddToWishlist}
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
-            
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={handleShare}
-            >
-              <Share2 className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </div>
