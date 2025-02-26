@@ -59,7 +59,7 @@ const ProductDetail = () => {
   const generateWhatsAppLink = () => {
     if (!product) return '#';
     
-    const phoneNumber = '5491112345678'; // Reemplaza esto con tu número real
+    const phoneNumber = '573023357375'; // Número actualizado con formato internacional
     const message = encodeURIComponent(
       `Hola, estoy interesado/a en el perfume ${product.name} (${product.brand}). ¿Podrías darme más información?`
     );

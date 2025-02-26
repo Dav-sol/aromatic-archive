@@ -52,6 +52,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// Definimos los tipos permitidos para las notas de fragancia
+type NoteType = "top" | "middle" | "base";
+
 const FragranceNoteSchema = z.object({
   description: z.string().min(1, "La descripción de la nota es requerida"),
   note_type: z.enum(["top", "middle", "base"], {
@@ -75,6 +78,7 @@ const productSchema = z.object({
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
+type FragranceNote = z.infer<typeof FragranceNoteSchema>;
 
 const AdminPanel = () => {
   const { toast } = useToast();
@@ -83,7 +87,7 @@ const AdminPanel = () => {
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [newNote, setNewNote] = useState({ description: "", note_type: "top" });
+  const [newNote, setNewNote] = useState<FragranceNote>({ description: "", note_type: "top" });
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -220,7 +224,7 @@ const AdminPanel = () => {
     }
 
     const currentNotes = form.getValues('fragranceNotes') || [];
-    form.setValue('fragranceNotes', [...currentNotes, { ...newNote }]);
+    form.setValue('fragranceNotes', [...currentNotes, newNote]);
     setNewNote({ description: "", note_type: "top" });
   };
 
@@ -231,7 +235,7 @@ const AdminPanel = () => {
     form.setValue('fragranceNotes', newNotes);
   };
 
-  const saveFragranceNotes = async (productId: string, notes: any[]) => {
+  const saveFragranceNotes = async (productId: string, notes: FragranceNote[]) => {
     if (!notes || notes.length === 0) return;
 
     try {
@@ -466,9 +470,9 @@ const AdminPanel = () => {
     })) : [];
     
     // Formatear notas de fragancia para el formulario
-    const formattedNotes = fragranceNotes ? fragranceNotes.map(note => ({
+    const formattedNotes: FragranceNote[] = fragranceNotes ? fragranceNotes.map(note => ({
       description: note.description,
-      note_type: note.note_type
+      note_type: note.note_type as NoteType
     })) : [];
     
     form.reset({
@@ -688,7 +692,7 @@ const AdminPanel = () => {
                           </div>
                           <Select 
                             value={newNote.note_type}
-                            onValueChange={(value) => setNewNote({...newNote, note_type: value as "top" | "middle" | "base"})}
+                            onValueChange={(value) => setNewNote({...newNote, note_type: value as NoteType})}
                           >
                             <SelectTrigger className="w-[180px]">
                               <SelectValue placeholder="Tipo de nota" />
