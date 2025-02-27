@@ -88,6 +88,7 @@ const AdminPanel = () => {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [newNote, setNewNote] = useState<FragranceNote>({ description: "", note_type: "top" });
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -187,6 +188,23 @@ const AdminPanel = () => {
     }
   };
 
+  const deleteImageFromDB = async (imageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('product_images')
+        .delete()
+        .eq('id', imageId);
+
+      if (error) {
+        throw error;
+      }
+      return true;
+    } catch (error) {
+      console.error('Error al eliminar imagen de la base de datos:', error);
+      return false;
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -200,15 +218,21 @@ const AdminPanel = () => {
     form.setValue('images', [...currentImages, ...newImages]);
   };
 
-  const removeImage = (index: number) => {
+  const removeImage = async (index: number) => {
     const currentImages = form.getValues('images') || [];
-    const newImages = [...currentImages];
+    const image = currentImages[index];
     
-    // Liberar URL de objeto si existe
-    if (newImages[index]?.url && !newImages[index]?.id) {
-      URL.revokeObjectURL(newImages[index].url as string);
+    // Si la imagen tiene un ID, almacénala para eliminarla de la BD al guardar
+    if (image.id) {
+      setImagesToDelete(prev => [...prev, image.id as string]);
     }
     
+    // Liberar URL de objeto si existe
+    if (image.url && !image.id) {
+      URL.revokeObjectURL(image.url);
+    }
+    
+    const newImages = [...currentImages];
     newImages.splice(index, 1);
     form.setValue('images', newImages);
   };
@@ -343,7 +367,13 @@ const AdminPanel = () => {
 
         if (error) throw error;
 
-        // 2. Procesar imágenes nuevas
+        // 2. Eliminar imágenes seleccionadas para borrar
+        if (imagesToDelete.length > 0) {
+          const deletePromises = imagesToDelete.map(imageId => deleteImageFromDB(imageId));
+          await Promise.all(deletePromises);
+        }
+
+        // 3. Procesar imágenes nuevas
         if (values.images && values.images.length > 0) {
           const newImages = values.images.filter(img => img.file);
           
@@ -356,12 +386,14 @@ const AdminPanel = () => {
           }
         }
 
-        // 3. Actualizar notas de fragancia
+        // 4. Actualizar notas de fragancia
         await saveFragranceNotes(id, values.fragranceNotes || []);
 
         return product;
       } finally {
         setIsUploading(false);
+        // Limpiar el estado de imágenes a eliminar
+        setImagesToDelete([]);
       }
     },
     onSuccess: () => {
@@ -442,6 +474,7 @@ const AdminPanel = () => {
 
   const handleEdit = async (product: any) => {
     setSelectedProduct(product);
+    setImagesToDelete([]); // Reiniciar las imágenes a eliminar
     
     // Cargar las imágenes del producto
     const { data: images, error: imagesError } = await supabase
@@ -517,6 +550,7 @@ const AdminPanel = () => {
           <DialogTrigger asChild>
             <Button onClick={() => {
               setSelectedProduct(null);
+              setImagesToDelete([]);
               form.reset({
                 name: "",
                 brand: "",
