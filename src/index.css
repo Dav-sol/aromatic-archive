@@ -5,33 +5,33 @@
  
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 45 100% 55%;
+    --background: 0 0% 100%;
+    --foreground: 45 100% 45%;
  
-    --card: 0 0% 3%;
-    --card-foreground: 45 100% 55%;
+    --card: 0 0% 98%;
+    --card-foreground: 45 100% 45%;
  
-    --popover: 0 0% 3%;
-    --popover-foreground: 45 100% 55%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 45 100% 45%;
  
-    --primary: 45 100% 55%;
+    --primary: 45 100% 45%;
     --primary-foreground: 0 0% 0%;
  
-    --secondary: 0 0% 9%;
-    --secondary-foreground: 45 100% 55%;
+    --secondary: 45 30% 96%;
+    --secondary-foreground: 45 100% 45%;
  
-    --muted: 0 0% 9%;
-    --muted-foreground: 45 70% 50%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 45 80% 40%;
  
-    --accent: 45 100% 55%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 45 80% 96%;
+    --accent-foreground: 45 100% 45%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
  
-    --border: 45 100% 35%;
-    --input: 0 0% 9%;
-    --ring: 45 100% 55%;
+    --border: 45 100% 45%;
+    --input: 45 30% 96%;
+    --ring: 45 100% 45%;
  
     --radius: 0.5rem;
   }
@@ -92,4 +92,21 @@
   100% {
     transform: translateX(100%);
   }
+}
+
+/* Estilos para el menú móvil */
+.mobile-menu-container {
+  @apply fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center transform transition-transform duration-300 ease-in-out;
+}
+
+.mobile-menu-container.hidden {
+  transform: translateX(-100%);
+}
+
+.mobile-menu-container.visible {
+  transform: translateX(0);
+}
+
+.mobile-menu-link {
+  @apply text-primary font-medium text-xl py-3 border-b border-primary/20 w-full text-center hover:bg-primary/10 transition-colors;
 }
