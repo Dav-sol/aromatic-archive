@@ -247,7 +247,8 @@ const AdminPanel = () => {
 
       // Luego insertar las nuevas notas
       const notesWithProductId = notes.map(note => ({
-        ...note,
+        description: note.description,
+        note_type: note.note_type,
         product_id: productId
       }));
 

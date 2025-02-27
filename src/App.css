@@ -36,7 +36,7 @@
 }
 
 .luxury-gradient {
-  background: linear-gradient(90deg, rgb(23, 207, 215) 0%, rgb(132, 94, 241) 100%);
+  background: linear-gradient(90deg, #fff 0%, #f7f3e3 100%);
 }
 
 .gold-text {
@@ -48,7 +48,7 @@
 }
 
 .luxury-card {
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(212, 175, 55, 0.3);
   transition: all 0.3s ease;
   border-radius: 0;
@@ -60,15 +60,15 @@
 }
 
 .gradient-header {
-  background: linear-gradient(90deg, rgb(23, 207, 215) 0%, rgb(132, 94, 241) 100%);
+  background: linear-gradient(90deg, #fff6e5 0%, #f3e9c7 100%);
   padding: 1rem 0;
-  color: white;
+  color: #D4AF37;
 }
 
 .black-section {
-  background-color: #111111;
+  background-color: #ffffff;
   padding: 3rem 0;
-  color: white;
+  color: #333;
 }
 
 .category-container {
@@ -81,7 +81,7 @@
 }
 
 .category-card {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(212, 175, 55, 0.2);
   padding: 1.5rem;
   position: relative;
@@ -101,7 +101,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.2) 100%);
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 60%, rgba(255, 255, 255, 0.3) 100%);
   z-index: 1;
 }
 
@@ -119,7 +119,7 @@
 }
 
 .category-description {
-  color: white;
+  color: #333;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -138,7 +138,7 @@
 
 .circular-button:hover {
   background-color: #D4AF37;
-  color: black;
+  color: white;
 }
 
 .hero-luxury {
@@ -148,7 +148,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background-color: #111111;
+  background-color: #fff;
 }
 
 .hero-content {
@@ -168,7 +168,7 @@
 .hero-subtitle {
   font-size: 1.2rem;
   margin-bottom: 2rem;
-  color: white;
+  color: #333;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -208,5 +208,5 @@
 
 .button-luxury:hover {
   background-color: #D4AF37;
-  color: black;
+  color: white;
 }
