@@ -7,6 +7,8 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showAdminLink, setShowAdminLink] = useState(false);
+  const [logoClickCount, setLogoClickCount] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
   const location = useLocation();
 
   const toggleMenu = () => {
@@ -19,7 +21,34 @@ const Navigation = () => {
     }
   };
 
-  // Mostrar/ocultar enlace de admin con Ctrl+Shift+A
+  // Logo click counter for admin access
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const currentTime = new Date().getTime();
+    
+    // Reset counter if more than 2 seconds between clicks
+    if (currentTime - lastClickTime > 2000) {
+      setLogoClickCount(1);
+    } else {
+      setLogoClickCount(prev => prev + 1);
+    }
+    
+    setLastClickTime(currentTime);
+    
+    // Activate admin link after 5 rapid clicks
+    if (logoClickCount === 4) {
+      setShowAdminLink(prev => !prev);
+      setLogoClickCount(0);
+    }
+    
+    // Normal link behavior after handling the click counting
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+    window.location.href = '/';
+  };
+
+  // Mantener el atajo de teclado como método alternativo
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'A') {
@@ -52,16 +81,29 @@ const Navigation = () => {
     document.body.style.overflow = 'auto';
   }, [location.pathname]);
 
+  // Secret path detection
+  useEffect(() => {
+    // Check if URL contains the secret admin access parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('access') === 'admin') {
+      setShowAdminLink(true);
+      
+      // Remove the parameter from URL for discretion
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [location]);
+
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-primary/30 transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0">
-              <Link 
-                to="/" 
+              <a 
+                href="/"
                 className="text-xl sm:text-2xl font-elegant text-primary tracking-wide flex items-center"
-                onClick={() => isMenuOpen && setIsMenuOpen(false)}
+                onClick={handleLogoClick}
               >
                 <img 
                   src="/lovable-uploads/2c6dbf7f-9cac-486c-9875-538bbfb09192.png" 
@@ -70,7 +112,7 @@ const Navigation = () => {
                 />
                 <span className="hidden sm:inline">Profumi D'incanto</span>
                 <span className="sm:hidden">Profumi</span>
-              </Link>
+              </a>
             </div>
             
             {/* Menú de escritorio */}

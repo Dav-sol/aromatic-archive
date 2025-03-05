@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Navigation from "./components/Navigation";
@@ -44,6 +44,7 @@ const App = () => {
                   <AdminPanel />
                 </div>
               } />
+              <Route path="/secret-admin" element={<Navigate to="/?access=admin" replace />} />
               <Route path="/product/:id" element={
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
                   <Breadcrumbs />
