@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
 const Navigation = () => {
@@ -10,7 +10,9 @@ const Navigation = () => {
   const [logoClickCount, setLogoClickCount] = useState(0);
   const [lastClickTime, setLastClickTime] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
 
+  // Toggle the menu open/closed state
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     // Prevenir el desplazamiento cuando el menú está abierto
@@ -38,14 +40,16 @@ const Navigation = () => {
     // Activate admin link after 5 rapid clicks
     if (logoClickCount === 4) {
       setShowAdminLink(prev => !prev);
+      console.log("Admin access toggled via logo clicks:", !showAdminLink);
       setLogoClickCount(0);
+      return; // Prevent navigation when toggling admin
     }
     
     // Normal link behavior after handling the click counting
     if (isMenuOpen) {
       setIsMenuOpen(false);
     }
-    window.location.href = '/';
+    navigate('/');
   };
 
   // Mantener el atajo de teclado como método alternativo
@@ -53,7 +57,10 @@ const Navigation = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'A') {
         e.preventDefault();
-        setShowAdminLink(prev => !prev);
+        setShowAdminLink(prev => {
+          console.log("Admin access toggled via keyboard:", !prev);
+          return !prev;
+        });
       }
     };
 
@@ -86,6 +93,7 @@ const Navigation = () => {
     // Check if URL contains the secret admin access parameter
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('access') === 'admin') {
+      console.log("Admin access enabled via URL parameter");
       setShowAdminLink(true);
       
       // Remove the parameter from URL for discretion
@@ -94,14 +102,18 @@ const Navigation = () => {
     }
   }, [location]);
 
+  // Debug messages to help us understand the state
+  useEffect(() => {
+    console.log("Admin link visibility:", showAdminLink);
+  }, [showAdminLink]);
+
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-primary/30 transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0">
-              <a 
-                href="/"
+              <button 
                 className="text-xl sm:text-2xl font-elegant text-primary tracking-wide flex items-center"
                 onClick={handleLogoClick}
               >
@@ -112,7 +124,7 @@ const Navigation = () => {
                 />
                 <span className="hidden sm:inline">Profumi D'incanto</span>
                 <span className="sm:hidden">Profumi</span>
-              </a>
+              </button>
             </div>
             
             {/* Menú de escritorio */}

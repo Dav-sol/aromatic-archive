@@ -24,6 +24,7 @@ const AdminPanel = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
 
+  // Consulta productos con correcto manejo de errores
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: productService.fetchProducts,
