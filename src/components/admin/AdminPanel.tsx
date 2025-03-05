@@ -27,12 +27,14 @@ const AdminPanel = () => {
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: productService.fetchProducts,
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudieron cargar los productos",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No se pudieron cargar los productos",
+        });
+      }
     }
   });
 
