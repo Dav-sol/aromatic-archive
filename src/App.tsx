@@ -15,7 +15,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <div className="min-h-screen bg-black">
+        <div className="min-h-screen bg-white">
           <Navigation />
           <main className="pt-16 pb-16">
             <Routes>
