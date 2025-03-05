@@ -50,7 +50,11 @@ const App = () => {
                   <ProductDetail />
                 </div>
               } />
-              <Route path="*" element={<div>404</div>} />
+              <Route path="*" element={
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                  <h1 className="text-2xl font-semibold text-center">Página no encontrada</h1>
+                </div>
+              } />
             </Routes>
           </main>
         </div>

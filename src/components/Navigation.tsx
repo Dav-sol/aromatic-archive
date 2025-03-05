@@ -1,9 +1,13 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [showAdminLink, setShowAdminLink] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -15,28 +19,62 @@ const Navigation = () => {
     }
   };
 
+  // Mostrar/ocultar enlace de admin con Ctrl+Shift+A
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        setShowAdminLink(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Detectar scroll para añadir sombra a la barra de navegación
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Cerrar menú cuando se cambia de ruta
+  useEffect(() => {
+    setIsMenuOpen(false);
+    document.body.style.overflow = 'auto';
+  }, [location.pathname]);
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-primary/30">
+      <nav className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-primary/30 transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0">
               <Link 
                 to="/" 
-                className="text-2xl font-elegant text-primary tracking-wide flex items-center"
+                className="text-xl sm:text-2xl font-elegant text-primary tracking-wide flex items-center"
                 onClick={() => isMenuOpen && setIsMenuOpen(false)}
               >
                 <img 
                   src="/lovable-uploads/2c6dbf7f-9cac-486c-9875-538bbfb09192.png" 
                   alt="Profumi D'incanto" 
-                  className="h-8 mr-2"
+                  className="h-6 sm:h-8 mr-2"
                 />
-                <span>Profumi D'incanto</span>
+                <span className="hidden sm:inline">Profumi D'incanto</span>
+                <span className="sm:hidden">Profumi</span>
               </Link>
             </div>
             
             {/* Menú de escritorio */}
-            <div className="hidden sm:block desktop-menu">
+            <div className="hidden md:block desktop-menu">
               <div className="flex space-x-8">
                 <Link
                   to="/catalog"
@@ -56,66 +94,78 @@ const Navigation = () => {
                 >
                   Hombre
                 </Link>
-                <Link
-                  to="/admin"
-                  className="text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary"
-                >
-                  Administración
-                </Link>
+                {showAdminLink && (
+                  <Link
+                    to="/admin"
+                    className="text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary"
+                  >
+                    Administración
+                  </Link>
+                )}
               </div>
             </div>
             
             {/* Botón de menú hamburguesa para móvil */}
-            <div 
-              className={`hamburger-icon flex flex-col items-center justify-center ${isMenuOpen ? 'hamburger-active' : ''}`}
+            <button 
+              className="md:hidden flex items-center justify-center p-2 rounded-md text-primary focus:outline-none"
               onClick={toggleMenu}
+              aria-label="Abrir menú"
             >
-              <div className="hamburger-line"></div>
-              <div className="hamburger-line"></div>
-              <div className="hamburger-line"></div>
-            </div>
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
       </nav>
       
       {/* Menú móvil */}
-      <div className={`mobile-menu-container ${isMenuOpen ? 'visible' : 'hidden'}`}>
-        <div className="flex flex-col w-full py-10">
-          <Link
-            to="/"
-            className="mobile-menu-link"
-            onClick={toggleMenu}
-          >
-            Inicio
-          </Link>
-          <Link
-            to="/catalog"
-            className="mobile-menu-link"
-            onClick={toggleMenu}
-          >
-            Catálogo
-          </Link>
-          <Link
-            to="/catalog/female"
-            className="mobile-menu-link"
-            onClick={toggleMenu}
-          >
-            Mujer
-          </Link>
-          <Link
-            to="/catalog/male"
-            className="mobile-menu-link"
-            onClick={toggleMenu}
-          >
-            Hombre
-          </Link>
-          <Link
-            to="/admin"
-            className="mobile-menu-link"
-            onClick={toggleMenu}
-          >
-            Administración
-          </Link>
+      <div className={`fixed inset-0 bg-white z-40 transition-transform duration-300 transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} md:hidden`}>
+        <div className="pt-20 pb-4 px-4 flex flex-col h-full overflow-y-auto">
+          <div className="flex flex-col space-y-2">
+            <Link
+              to="/"
+              className="text-gray-800 hover:bg-primary/10 hover:text-primary px-4 py-3 rounded-md transition-colors text-lg font-medium"
+              onClick={toggleMenu}
+            >
+              Inicio
+            </Link>
+            <Link
+              to="/catalog"
+              className="text-gray-800 hover:bg-primary/10 hover:text-primary px-4 py-3 rounded-md transition-colors text-lg font-medium"
+              onClick={toggleMenu}
+            >
+              Catálogo
+            </Link>
+            <Link
+              to="/catalog/female"
+              className="text-gray-800 hover:bg-primary/10 hover:text-primary px-4 py-3 rounded-md transition-colors text-lg font-medium"
+              onClick={toggleMenu}
+            >
+              Mujer
+            </Link>
+            <Link
+              to="/catalog/male"
+              className="text-gray-800 hover:bg-primary/10 hover:text-primary px-4 py-3 rounded-md transition-colors text-lg font-medium"
+              onClick={toggleMenu}
+            >
+              Hombre
+            </Link>
+            {showAdminLink && (
+              <Link
+                to="/admin"
+                className="text-gray-800 hover:bg-primary/10 hover:text-primary px-4 py-3 rounded-md transition-colors text-lg font-medium"
+                onClick={toggleMenu}
+              >
+                Administración
+              </Link>
+            )}
+          </div>
+          <div className="mt-auto pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-500 text-center">© 2024 Profumi D'incanto</p>
+          </div>
         </div>
       </div>
     </>
