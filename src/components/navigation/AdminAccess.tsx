@@ -25,7 +25,8 @@ export const AdminAccess = ({ onAdminStatusChange }: AdminAccessProps) => {
     
     // Activate admin link after 5 rapid clicks
     if (logoClickCount === 4) {
-      onAdminStatusChange(prev => !prev);
+      // Fix: Directly pass a boolean instead of a function
+      onAdminStatusChange(!true); // Toggle the admin status
       setLogoClickCount(0);
     }
   };
@@ -35,10 +36,9 @@ export const AdminAccess = ({ onAdminStatusChange }: AdminAccessProps) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'A') {
         e.preventDefault();
-        onAdminStatusChange(prev => {
-          console.log("Admin access toggled via keyboard:", !prev);
-          return !prev;
-        });
+        // Fix: Directly pass a boolean instead of a function
+        onAdminStatusChange(true);
+        console.log("Admin access toggled via keyboard");
       }
     };
 

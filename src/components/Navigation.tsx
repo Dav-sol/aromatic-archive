@@ -13,8 +13,13 @@ const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Fix: Pass a proper callback function that accepts a boolean
+  const handleAdminStatusChange = (status: boolean) => {
+    setShowAdminLink(status);
+  };
+
   const { handleLogoClick } = AdminAccess({ 
-    onAdminStatusChange: (newStatus) => setShowAdminLink(newStatus) 
+    onAdminStatusChange: handleAdminStatusChange
   });
 
   // Toggle the menu open/closed state
