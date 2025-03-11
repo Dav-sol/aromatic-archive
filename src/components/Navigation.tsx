@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShieldCheck } from "lucide-react";
 import { AdminAccess } from "./navigation/AdminAccess";
 import MobileMenu from "./navigation/MobileMenu";
 import DesktopMenu from "./navigation/DesktopMenu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,13 +14,13 @@ const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Fix: Pass a proper callback function that accepts a boolean
   const handleAdminStatusChange = (status: boolean) => {
     setShowAdminLink(status);
   };
 
   const { handleLogoClick } = AdminAccess({ 
-    onAdminStatusChange: handleAdminStatusChange
+    onAdminStatusChange: handleAdminStatusChange,
+    isAdmin: showAdminLink
   });
 
   // Toggle the menu open/closed state
@@ -82,8 +83,26 @@ const Navigation = () => {
               </button>
             </div>
             
+            {/* Componente de Menú Desktop */}
             <DesktopMenu showAdminLink={showAdminLink} />
             
+            {/* Indicador visual de modo admin */}
+            {showAdminLink && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="absolute top-4 right-20 md:right-4 flex items-center animate-pulse">
+                      <ShieldCheck className="h-5 w-5 text-green-600" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Modo Administrador Activo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+            
+            {/* Botón para el menú móvil */}
             <button 
               className="md:hidden flex items-center justify-center p-2 rounded-md text-primary focus:outline-none"
               onClick={toggleMenu}
@@ -95,6 +114,7 @@ const Navigation = () => {
         </div>
       </nav>
       
+      {/* Menú para móvil mejorado */}
       <MobileMenu 
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}

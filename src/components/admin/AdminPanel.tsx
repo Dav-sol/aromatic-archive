@@ -1,19 +1,10 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ProductFormValues, FragranceNote, ProductImage } from "./types";
 import ProductsTable from "./ProductsTable";
-import ProductForm from "./ProductForm";
+import AdminPanelHeader from './AdminPanelHeader';
+import { ProductFormValues } from "./types";
 import * as productService from "./productService";
 
 const AdminPanel = () => {
@@ -123,18 +114,18 @@ const AdminPanel = () => {
       const fragranceNotes = await productService.fetchFragranceNotes(product.id);
       
       // Mapear imágenes para el formulario
-      const formattedImages: ProductImage[] = images ? images.map(img => ({
+      const formattedImages = images ? images.map(img => ({
         id: img.id,
         url: img.image_url
       })) : [];
       
       // Formatear notas de fragancia para el formulario
-      const formattedNotes: FragranceNote[] = fragranceNotes ? fragranceNotes.map(note => ({
+      const formattedNotes = fragranceNotes ? fragranceNotes.map(note => ({
         description: note.description,
         note_type: note.note_type as "top" | "middle" | "base"
       })) : [];
       
-      const initialValues: ProductFormValues = {
+      const initialValues = {
         name: product.name,
         brand: product.brand,
         description: product.description || "",
@@ -171,44 +162,15 @@ const AdminPanel = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Panel de Administración
-        </h1>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => {
-              setSelectedProduct(null);
-              setImagesToDelete([]);
-            }}>
-              <Plus className="mr-2 h-4 w-4" />
-              Nuevo Producto
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {selectedProduct ? "Editar Producto" : "Nuevo Producto"}
-              </DialogTitle>
-            </DialogHeader>
-            <ProductForm 
-              initialValues={selectedProduct?.initialValues || {
-                name: "",
-                brand: "",
-                description: "",
-                price: 0,
-                stock: 0,
-                gender: "male",
-                images: [],
-                fragranceNotes: [],
-              }}
-              onSubmit={onSubmit}
-              isUploading={isUploading}
-              isEdit={!!selectedProduct}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+      <AdminPanelHeader 
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        selectedProduct={selectedProduct}
+        setSelectedProduct={setSelectedProduct}
+        setImagesToDelete={setImagesToDelete}
+        onSubmit={onSubmit}
+        isUploading={isUploading}
+      />
 
       <ProductsTable 
         products={products || []}
