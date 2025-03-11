@@ -13,7 +13,7 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em rgba(212, 175, 55, 0.6));
+  filter: drop-shadow(0 0 2em rgba(122, 89, 62, 0.6));
 }
 
 @keyframes logo-spin {
@@ -36,33 +36,33 @@
 }
 
 .luxury-gradient {
-  background: linear-gradient(90deg, #fff 0%, #f8f3e3 100%);
+  background: linear-gradient(90deg, #fff 0%, #f0e6d6 100%);
 }
 
 .gold-text {
-  color: #D4AF37;
+  color: #7A593E;
 }
 
 .gold-border {
-  border-color: #D4AF37;
+  border-color: #7A593E;
 }
 
 .luxury-card {
   background-color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(122, 89, 62, 0.3);
   transition: all 0.3s ease;
   border-radius: 0;
 }
 
 .luxury-card:hover {
-  border-color: rgba(212, 175, 55, 0.8);
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+  border-color: rgba(122, 89, 62, 0.8);
+  box-shadow: 0 4px 20px rgba(122, 89, 62, 0.2);
 }
 
 .gradient-header {
-  background: linear-gradient(90deg, #fff6e5 0%, #f8f4e0 100%);
+  background: linear-gradient(90deg, #fff6e5 0%, #f0e6d6 100%);
   padding: 1rem 0;
-  color: #D4AF37;
+  color: #7A593E;
 }
 
 .black-section {
@@ -82,7 +82,7 @@
 
 .category-card {
   background-color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(122, 89, 62, 0.2);
   padding: 1.5rem;
   position: relative;
   overflow: hidden;
@@ -113,7 +113,7 @@
 
 .category-title {
   font-family: 'Playfair Display', serif;
-  color: #D4AF37;
+  color: #7A593E;
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
@@ -126,8 +126,8 @@
 
 .circular-button {
   display: inline-block;
-  color: #D4AF37;
-  border: 1px solid #D4AF37;
+  color: #7A593E;
+  border: 1px solid #7A593E;
   border-radius: 9999px;
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
@@ -137,7 +137,7 @@
 }
 
 .circular-button:hover {
-  background-color: #D4AF37;
+  background-color: #7A593E;
   color: white;
 }
 
@@ -163,7 +163,7 @@
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: #D4AF37;
+  color: #7A593E;
 }
 
 @media (min-width: 640px) {
@@ -212,7 +212,7 @@
 
 .golden-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+  background: linear-gradient(90deg, transparent, #7A593E, transparent);
   width: 90%;
   margin: 2rem auto;
 }
@@ -225,7 +225,7 @@
 
 .section-title {
   font-family: 'Playfair Display', serif;
-  color: #D4AF37;
+  color: #7A593E;
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -238,11 +238,11 @@
   }
 }
 
-/* Botón elegante con borde dorado */
+/* Botón elegante con borde marrón */
 .button-luxury {
   background-color: transparent;
-  border: 1px solid #D4AF37;
-  color: #D4AF37;
+  border: 1px solid #7A593E;
+  color: #7A593E;
   padding: 0.5rem 1.25rem;
   transition: all 0.3s ease;
   font-size: 0.875rem;
@@ -251,7 +251,7 @@
 }
 
 .button-luxury:hover {
-  background-color: #D4AF37;
+  background-color: #7A593E;
   color: #fff;
 }
 

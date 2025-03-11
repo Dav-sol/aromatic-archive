@@ -6,32 +6,32 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 45 100% 45%;
+    --foreground: 31 38% 26%;
  
     --card: 0 0% 98%;
-    --card-foreground: 45 100% 45%;
+    --card-foreground: 31 38% 26%;
  
     --popover: 0 0% 100%;
-    --popover-foreground: 45 100% 45%;
+    --popover-foreground: 31 38% 26%;
  
-    --primary: 45 100% 45%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 31 38% 26%;
+    --primary-foreground: 45 100% 96%;
  
-    --secondary: 45 30% 96%;
-    --secondary-foreground: 45 100% 45%;
+    --secondary: 31 20% 92%;
+    --secondary-foreground: 31 38% 26%;
  
-    --muted: 0 0% 95%;
-    --muted-foreground: 45 80% 40%;
+    --muted: 31 10% 95%;
+    --muted-foreground: 31 25% 35%;
  
-    --accent: 45 80% 96%;
-    --accent-foreground: 45 100% 45%;
+    --accent: 30 20% 90%;
+    --accent-foreground: 31 38% 26%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
  
-    --border: 45 100% 45%;
-    --input: 45 30% 96%;
-    --ring: 45 100% 45%;
+    --border: 31 25% 60%;
+    --input: 31 20% 92%;
+    --ring: 31 38% 26%;
  
     --radius: 0.5rem;
   }
@@ -71,7 +71,7 @@
   @apply bg-primary text-primary-foreground hover:bg-primary/90 border border-primary/30 shadow-md hover:shadow-lg transition-all;
 }
 
-/* Estilo para las tarjetas de productos con borde dorado */
+/* Estilo para las tarjetas de productos con borde sofisticado */
 .card-luxury {
   @apply border border-primary/30 bg-card rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all;
 }
