@@ -1,0 +1,15 @@
+
+.luxury-gradient {
+  background: linear-gradient(90deg, #fff 0%, #f0e6d6 100%);
+}
+
+.gold-border {
+  border-color: #7A593E;
+}
+
+.golden-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #7A593E, transparent);
+  width: 90%;
+  margin: 2rem auto;
+}
