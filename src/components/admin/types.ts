@@ -17,7 +17,9 @@ export const productSchema = z.object({
   description: z.string().optional(),
   price: z.coerce.number().min(0, "El precio debe ser mayor a 0"),
   stock: z.coerce.number().min(0, "El stock debe ser mayor o igual a 0"),
-  gender: z.enum(["male", "female"]),
+  gender: z.enum(["male", "female"], {
+    required_error: "El género es requerido",
+  }),
   images: z.array(z.object({
     file: z.instanceof(File).optional(),
     url: z.string().optional(),

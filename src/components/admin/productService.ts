@@ -129,23 +129,33 @@ export const saveFragranceNotes = async (productId: string, notes: FragranceNote
 
   try {
     // Primero eliminar notas existentes para este producto
-    await supabase
+    const { error: deleteError } = await supabase
       .from('fragrance_notes')
       .delete()
       .eq('product_id', productId);
+      
+    if (deleteError) {
+      console.error('Error al eliminar notas existentes:', deleteError);
+      throw deleteError;
+    }
 
     // Luego insertar las nuevas notas
-    const notesWithProductId = notes.map(note => ({
-      description: note.description,
-      note_type: note.note_type,
-      product_id: productId
-    }));
+    if (notes.length > 0) {
+      const notesWithProductId = notes.map(note => ({
+        description: note.description,
+        note_type: note.note_type,
+        product_id: productId
+      }));
 
-    const { error } = await supabase
-      .from('fragrance_notes')
-      .insert(notesWithProductId);
+      const { error: insertError } = await supabase
+        .from('fragrance_notes')
+        .insert(notesWithProductId);
 
-    if (error) throw error;
+      if (insertError) {
+        console.error('Error al insertar nuevas notas:', insertError);
+        throw insertError;
+      }
+    }
   } catch (error) {
     console.error('Error al guardar notas de fragancia:', error);
     throw error;

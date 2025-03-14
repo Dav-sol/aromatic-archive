@@ -11,6 +11,11 @@ export interface Product {
   isOnSale?: boolean;
   discountPercentage?: number;
   isFeatured?: boolean;
+  fragranceNotes?: {
+    top: any[];
+    middle: any[];
+    base: any[];
+  };
 }
 
 export type SortOption = "price" | "name" | "brand";
