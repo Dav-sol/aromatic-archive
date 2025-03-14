@@ -24,6 +24,8 @@ export const productSchema = z.object({
     id: z.string().optional(),
   })).optional().default([]),
   fragranceNotes: z.array(FragranceNoteSchema).optional().default([]),
+  isFeatured: z.boolean().default(false),
+  discountPercentage: z.coerce.number().min(0).max(100).default(0),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

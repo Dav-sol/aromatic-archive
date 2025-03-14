@@ -2,8 +2,65 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import ProductGrid from "./ProductGrid";
+import { Product } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const HomePage = () => {
+  // Fetch featured products
+  const { data: featuredProducts, isLoading: isLoadingFeatured } = useQuery({
+    queryKey: ['featuredProducts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, product_images(*)')
+        .eq('is_featured', true)
+        .order('name');
+        
+      if (error) throw error;
+      
+      return data.map(product => ({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        price: product.price,
+        salePrice: product.sale_price,
+        isOnSale: product.is_on_sale,
+        images: product.product_images?.map(img => img.image_url) || []
+      })) as Product[];
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    refetchOnWindowFocus: false,
+  });
+
+  // Fetch products on sale
+  const { data: saleProducts, isLoading: isLoadingSale } = useQuery({
+    queryKey: ['saleProducts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, product_images(*)')
+        .eq('is_on_sale', true)
+        .order('discount_percentage', { ascending: false });
+        
+      if (error) throw error;
+      
+      return data.map(product => ({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        price: product.price,
+        salePrice: product.sale_price,
+        isOnSale: product.is_on_sale,
+        images: product.product_images?.map(img => img.image_url) || []
+      })) as Product[];
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    refetchOnWindowFocus: false,
+  });
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Hero section */}
@@ -46,6 +103,78 @@ const HomePage = () => {
         </div>
       </section>
       
+      {/* Popular Products Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-4xl font-elegant text-primary text-center mb-4">Productos Populares</h2>
+          <div className="h-px w-24 bg-primary mx-auto mb-16"></div>
+          
+          {isLoadingFeatured ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-4">
+                  <Skeleton className="aspect-square w-full rounded-lg" />
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : featuredProducts && featuredProducts.length > 0 ? (
+            <ProductGrid products={featuredProducts} />
+          ) : (
+            <p className="text-center text-gray-500 italic">No hay productos destacados disponibles actualmente.</p>
+          )}
+
+          <div className="text-center mt-10">
+            <Link to="/catalog">
+              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                Ver todos los productos
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+      
+      {/* Promotions Section */}
+      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col items-center mb-16">
+            <div className="inline-block bg-primary/10 px-6 py-3 rounded-full mb-6">
+              <span className="text-primary font-medium">¡Ofertas Especiales!</span>
+            </div>
+            <h2 className="text-4xl font-elegant text-primary text-center mb-4">Promociones del Momento</h2>
+            <div className="h-px w-24 bg-primary mx-auto mb-4"></div>
+            <p className="text-gray-600 text-center max-w-2xl">
+              Descubre nuestras fragancias exclusivas con descuentos especiales por tiempo limitado.
+            </p>
+          </div>
+          
+          {isLoadingSale ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-4">
+                  <Skeleton className="aspect-square w-full rounded-lg" />
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : saleProducts && saleProducts.length > 0 ? (
+            <ProductGrid products={saleProducts} />
+          ) : (
+            <p className="text-center text-gray-500 italic">No hay productos en promoción disponibles actualmente.</p>
+          )}
+
+          <div className="text-center mt-10">
+            <Link to="/catalog">
+              <Button className="bg-primary text-white hover:bg-primary/90">
+                Ver todas las promociones
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Sección de categorías elegantes */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">

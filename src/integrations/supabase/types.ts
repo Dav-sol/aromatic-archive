@@ -75,8 +75,10 @@ export type Database = {
           brand: string
           created_at: string | null
           description: string | null
+          discount_percentage: number | null
           gender: Database["public"]["Enums"]["gender"]
           id: string
+          is_featured: boolean | null
           is_on_sale: boolean | null
           name: string
           price: number
@@ -88,8 +90,10 @@ export type Database = {
           brand: string
           created_at?: string | null
           description?: string | null
+          discount_percentage?: number | null
           gender: Database["public"]["Enums"]["gender"]
           id?: string
+          is_featured?: boolean | null
           is_on_sale?: boolean | null
           name: string
           price: number
@@ -101,8 +105,10 @@ export type Database = {
           brand?: string
           created_at?: string | null
           description?: string | null
+          discount_percentage?: number | null
           gender?: Database["public"]["Enums"]["gender"]
           id?: string
+          is_featured?: boolean | null
           is_on_sale?: boolean | null
           name?: string
           price?: number

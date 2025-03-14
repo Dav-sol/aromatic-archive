@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2, Image as ImageIcon } from "lucide-react";
+import { Pencil, Trash2, Image as ImageIcon, Star, TagIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { UseMutationResult } from "@tanstack/react-query";
 
 interface ProductsTableProps {
@@ -43,6 +44,7 @@ const ProductsTable = ({
             <TableHead>Marca</TableHead>
             <TableHead>Género</TableHead>
             <TableHead>Precio</TableHead>
+            <TableHead>Estado</TableHead>
             <TableHead>Stock</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
@@ -70,7 +72,37 @@ const ProductsTable = ({
               <TableCell className="capitalize">
                 {product.gender === 'male' ? 'Masculino' : 'Femenino'}
               </TableCell>
-              <TableCell>$ {Number(product.price).toLocaleString('es-CO')}</TableCell>
+              <TableCell>
+                {product.is_on_sale ? (
+                  <div>
+                    <span className="line-through text-muted-foreground text-sm">
+                      $ {Number(product.price).toLocaleString('es-CO')}
+                    </span>
+                    <br />
+                    <span className="text-red-600">
+                      $ {Number(product.sale_price).toLocaleString('es-CO')}
+                    </span>
+                  </div>
+                ) : (
+                  <span>$ {Number(product.price).toLocaleString('es-CO')}</span>
+                )}
+              </TableCell>
+              <TableCell>
+                <div className="flex flex-wrap gap-1">
+                  {product.is_featured && (
+                    <Badge variant="outline" className="border-yellow-500 text-yellow-700 flex items-center gap-1">
+                      <Star className="h-3 w-3" />
+                      Destacado
+                    </Badge>
+                  )}
+                  {product.is_on_sale && (
+                    <Badge variant="outline" className="border-red-500 text-red-700 flex items-center gap-1">
+                      <TagIcon className="h-3 w-3" />
+                      {product.discount_percentage}% dcto
+                    </Badge>
+                  )}
+                </div>
+              </TableCell>
               <TableCell>{product.stock}</TableCell>
               <TableCell className="text-right space-x-2">
                 <Button

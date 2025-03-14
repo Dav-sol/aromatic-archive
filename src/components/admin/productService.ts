@@ -163,6 +163,8 @@ export const createProduct = async (values: ProductFormValues) => {
       price: values.price,
       stock: values.stock,
       gender: values.gender,
+      is_featured: values.isFeatured,
+      discount_percentage: values.discountPercentage
     })
     .select()
     .single();
@@ -199,6 +201,8 @@ export const updateProduct = async (id: string, values: ProductFormValues, image
       price: values.price,
       stock: values.stock,
       gender: values.gender,
+      is_featured: values.isFeatured,
+      discount_percentage: values.discountPercentage
     })
     .eq('id', id)
     .select()

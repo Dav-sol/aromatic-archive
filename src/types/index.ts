@@ -9,6 +9,8 @@ export interface Product {
   salePrice?: number;
   images: string[];
   isOnSale?: boolean;
+  discountPercentage?: number;
+  isFeatured?: boolean;
 }
 
 export type SortOption = "price" | "name" | "brand";

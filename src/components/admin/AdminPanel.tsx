@@ -54,6 +54,8 @@ const AdminPanel = () => {
       productService.updateProduct(data.id, data.values, imagesToDelete),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['featuredProducts'] });
+      queryClient.invalidateQueries({ queryKey: ['saleProducts'] });
       toast({
         title: "Éxito",
         description: "Producto actualizado correctamente",
@@ -75,6 +77,8 @@ const AdminPanel = () => {
     mutationFn: productService.deleteProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['featuredProducts'] });
+      queryClient.invalidateQueries({ queryKey: ['saleProducts'] });
       toast({
         title: "Éxito",
         description: "Producto eliminado correctamente",
@@ -134,6 +138,8 @@ const AdminPanel = () => {
         gender: product.gender,
         images: formattedImages,
         fragranceNotes: formattedNotes,
+        isFeatured: product.is_featured || false,
+        discountPercentage: product.discount_percentage || 0
       };
       
       setSelectedProduct({
