@@ -173,11 +173,11 @@ const ProductDetail = () => {
             <p className="text-xl font-semibold mt-2">
               {product.is_on_sale && product.sale_price ? (
                 <>
-                  <span className="line-through text-muted-foreground mr-2">${product.price}</span>
-                  <span className="text-red-600">${product.sale_price}</span>
+                  <span className="line-through text-muted-foreground mr-2">$ {Number(product.price).toLocaleString('es-CO')}</span>
+                  <span className="text-red-600">$ {Number(product.sale_price).toLocaleString('es-CO')}</span>
                 </>
               ) : (
-                `$${product.price}`
+                `$ ${Number(product.price).toLocaleString('es-CO')}`
               )}
             </p>
             <p className="text-sm text-muted-foreground mt-1">

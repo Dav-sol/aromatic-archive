@@ -25,21 +25,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <div className="p-4 bg-card">
           <div className="flex justify-between items-start">
-            <div>
-              <h3 className="text-primary font-elegant text-lg">
+            <div className="flex-1 pr-2">
+              <h3 className="text-primary font-elegant text-lg font-medium truncate">
                 {product.name}
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">{product.brand}</p>
             </div>
-            <div className={cn("text-sm", product.isOnSale ? "text-red-500" : "text-primary")}>
+            <div className={cn("text-sm whitespace-nowrap", product.isOnSale ? "text-red-500" : "text-primary")}>
               {product.isOnSale ? (
                 <>
-                  <span className="line-through text-muted-foreground">De ${product.price}</span>
+                  <span className="line-through text-muted-foreground">$ {product.price.toLocaleString('es-CO')}</span>
                   <br />
-                  <span className="font-medium">Desde ${product.salePrice}</span>
+                  <span className="font-medium">$ {product.salePrice?.toLocaleString('es-CO')}</span>
                 </>
               ) : (
-                <span className="font-medium">De ${product.price}</span>
+                <span className="font-medium">$ {product.price.toLocaleString('es-CO')}</span>
               )}
             </div>
           </div>

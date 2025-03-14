@@ -63,12 +63,14 @@ const ProductsTable = ({
                   </div>
                 )}
               </TableCell>
-              <TableCell className="font-medium">{product.name}</TableCell>
+              <TableCell className="font-medium max-w-[200px] truncate" title={product.name}>
+                {product.name}
+              </TableCell>
               <TableCell>{product.brand}</TableCell>
               <TableCell className="capitalize">
                 {product.gender === 'male' ? 'Masculino' : 'Femenino'}
               </TableCell>
-              <TableCell>${product.price}</TableCell>
+              <TableCell>$ {Number(product.price).toLocaleString('es-CO')}</TableCell>
               <TableCell>{product.stock}</TableCell>
               <TableCell className="text-right space-x-2">
                 <Button
