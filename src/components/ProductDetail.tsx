@@ -23,21 +23,29 @@ const ProductDetail = () => {
         
       if (productError) throw productError;
       
-      // Get product images
-      const { data: imagesData, error: imagesError } = await supabase
+      // Get product images - Optimized to request in parallel
+      const imagesPromise = supabase
         .from('product_images')
         .select('*')
         .eq('product_id', id)
         .order('display_order', { ascending: true });
         
-      if (imagesError) throw imagesError;
-      
-      // Get fragrance notes
-      const { data: notesData, error: notesError } = await supabase
+      // Get fragrance notes - Optimized to request in parallel
+      const notesPromise = supabase
         .from('fragrance_notes')
         .select('*')
         .eq('product_id', id);
         
+      // Wait for both parallel requests to complete
+      const [imagesResponse, notesResponse] = await Promise.all([
+        imagesPromise,
+        notesPromise
+      ]);
+      
+      const { data: imagesData, error: imagesError } = imagesResponse;
+      if (imagesError) throw imagesError;
+      
+      const { data: notesData, error: notesError } = notesResponse;
       if (notesError) throw notesError;
       
       // Organize notes by type
@@ -53,6 +61,8 @@ const ProductDetail = () => {
         notes
       };
     },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    refetchOnWindowFocus: false, // Prevent refetching when focus changes
   });
   
   if (isLoading) {
