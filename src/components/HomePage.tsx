@@ -63,47 +63,7 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* Hero section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-white/70 z-10"></div>
-          <img 
-            src="/lovable-uploads/799e3b7d-2632-48fa-8f4e-5c95ec89336e.png" 
-            alt="Hero Background" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        <div className="relative z-20 max-w-4xl mx-auto text-center px-4">
-          <img 
-            src="/lovable-uploads/2c6dbf7f-9cac-486c-9875-538bbfb09192.png" 
-            alt="Profumi D'incanto Logo" 
-            className="h-32 mx-auto mb-6"
-          />
-          <h1 className="text-5xl md:text-7xl font-elegant text-primary mb-6">
-            Profumi D'incanto
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-700 mb-10 max-w-3xl mx-auto">
-            Descubre nuestra exclusiva colección de fragancias de lujo que evocan emociones y recuerdos inolvidables.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/catalog/female">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto border-primary text-primary hover:bg-primary hover:text-white group">
-                Fragancias para Mujer
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <Link to="/catalog/male">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto border-primary text-primary hover:bg-primary hover:text-white group">
-                Fragancias para Hombre
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-      
-      {/* Nueva sección de Hero Fragrance */}
+      {/* Hero section con el nuevo estilo Tesla */}
       <HeroFragrance />
       
       {/* Popular Products Section */}
