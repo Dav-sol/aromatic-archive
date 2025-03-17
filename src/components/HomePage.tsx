@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ProductGrid from "./ProductGrid";
 import { Product } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import HeroFragrance from "./HeroFragrance";
 
 const HomePage = () => {
   // Fetch featured products
@@ -102,6 +102,9 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+      
+      {/* Nueva sección de Hero Fragrance */}
+      <HeroFragrance />
       
       {/* Popular Products Section */}
       <section className="py-20 bg-white">
