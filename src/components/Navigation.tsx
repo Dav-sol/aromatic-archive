@@ -72,7 +72,7 @@ const Navigation = () => {
         isScrolled 
           ? 'bg-white/90 backdrop-blur-sm shadow-md border-b border-primary/20' 
           : isHomePage 
-            ? 'bg-transparent border-transparent' 
+            ? 'bg-transparent' 
             : 'bg-white border-b border-primary/30'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,7 +82,7 @@ const Navigation = () => {
                 className={`text-xl sm:text-2xl font-elegant tracking-wide flex items-center ${
                   isScrolled || !isHomePage 
                     ? 'text-primary' 
-                    : 'text-white/90 hover:text-white'
+                    : 'text-white hover:text-white'
                 }`}
                 onClick={handleLogoClick}
               >
@@ -125,7 +125,7 @@ const Navigation = () => {
               className={`md:hidden flex items-center justify-center p-2 rounded-md focus:outline-none ${
                 isScrolled || !isHomePage 
                   ? 'text-primary' 
-                  : 'text-white/90 hover:text-white'
+                  : 'text-white hover:text-white'
               }`}
               onClick={toggleMenu}
               aria-label="Abrir menú"

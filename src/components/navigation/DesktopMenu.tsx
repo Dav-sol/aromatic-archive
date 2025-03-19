@@ -9,11 +9,11 @@ interface DesktopMenuProps {
 
 const DesktopMenu = ({ showAdminLink, isTransparent = false }: DesktopMenuProps) => {
   const linkBaseClasses = isTransparent 
-    ? "text-white/90 hover:text-white px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center"
+    ? "text-white hover:text-white px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center"
     : "text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary flex items-center";
 
   const adminClasses = isTransparent
-    ? "text-white/90 hover:text-white px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center"
+    ? "text-white hover:text-white px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center"
     : "text-green-600 hover:text-green-700 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-green-600 flex items-center";
 
   return (

@@ -12,24 +12,20 @@ const HeroFragrance = () => {
           alt="Fragancia de lujo" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-black/30"></div>
       </div>
       
       {/* Contenido centrado */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-        <h1 className="text-5xl md:text-6xl font-elegant text-white mt-10 mb-2 tracking-wide">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
+        <h1 className="text-5xl md:text-7xl font-elegant text-white tracking-wide mb-6 mt-[-100px]">
           Elegancia
         </h1>
         
-        <div className="mt-auto mb-20 flex flex-col items-center">
-          <Link to="/catalog" className="mb-4">
-            <Button variant="outline" className="rounded-full bg-black/40 backdrop-blur-sm text-white border-white/20 hover:bg-black/60 px-8 py-3">
+        <div className="absolute bottom-20 w-full flex flex-col items-center">
+          <Link to="/catalog">
+            <Button variant="outline" className="rounded-full bg-black/40 backdrop-blur-sm text-white border-white/20 hover:bg-black/60 px-8 py-6 text-lg">
               Explorar Colección
             </Button>
-          </Link>
-          
-          <Link to="/product/1" className="underline text-sm text-white/90 hover:text-white">
-            Ver Detalles
           </Link>
         </div>
       </div>
