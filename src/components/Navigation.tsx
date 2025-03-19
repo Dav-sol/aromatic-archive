@@ -68,7 +68,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 ${
         isScrolled 
           ? 'bg-white/90 backdrop-blur-sm shadow-md border-b border-primary/20' 
           : isHomePage 

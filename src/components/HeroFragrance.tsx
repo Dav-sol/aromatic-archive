@@ -12,7 +12,7 @@ const HeroFragrance = () => {
           alt="Fragancia de lujo" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/25"></div>
       </div>
       
       {/* Contenido centrado */}
