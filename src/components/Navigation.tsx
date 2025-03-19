@@ -34,7 +34,7 @@ const Navigation = () => {
     }
   };
 
-  // Detect scroll for navbar shadow
+  // Detect scroll for navbar shadow and background
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -63,28 +63,44 @@ const Navigation = () => {
     }
   }, [location]);
 
+  // Determine if we're on the homepage to apply transparent navbar
+  const isHomePage = location.pathname === "/";
+
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-primary/30 transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/90 backdrop-blur-sm shadow-md border-b border-primary/20' 
+          : isHomePage 
+            ? 'bg-transparent border-transparent' 
+            : 'bg-white border-b border-primary/30'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0">
               <button 
-                className="text-xl sm:text-2xl font-elegant text-primary tracking-wide flex items-center"
+                className={`text-xl sm:text-2xl font-elegant tracking-wide flex items-center ${
+                  isScrolled || !isHomePage 
+                    ? 'text-primary' 
+                    : 'text-white/90 hover:text-white'
+                }`}
                 onClick={handleLogoClick}
               >
                 <img 
                   src="/lovable-uploads/2c6dbf7f-9cac-486c-9875-538bbfb09192.png" 
                   alt="Profumi D'incanto" 
-                  className="h-6 sm:h-8 mr-2"
+                  className={`h-6 sm:h-8 mr-2 ${!isScrolled && isHomePage ? 'filter brightness-0 invert' : ''}`}
                 />
                 <span className="hidden sm:inline">Profumi D'incanto</span>
                 <span className="sm:hidden">Profumi</span>
               </button>
             </div>
             
-            {/* Componente de Menú Desktop */}
-            <DesktopMenu showAdminLink={showAdminLink} />
+            {/* Desktop Menu with conditional styling */}
+            <DesktopMenu 
+              showAdminLink={showAdminLink} 
+              isTransparent={!isScrolled && isHomePage}
+            />
             
             {/* Indicador visual de modo admin */}
             {showAdminLink && (
@@ -92,7 +108,9 @@ const Navigation = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="absolute top-4 right-20 md:right-4 flex items-center animate-pulse">
-                      <ShieldCheck className="h-5 w-5 text-green-600" />
+                      <ShieldCheck className={`h-5 w-5 ${
+                        !isScrolled && isHomePage ? 'text-white' : 'text-green-600'
+                      }`} />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -102,9 +120,13 @@ const Navigation = () => {
               </TooltipProvider>
             )}
             
-            {/* Botón para el menú móvil */}
+            {/* Botón para el menú móvil con estilos condicionales */}
             <button 
-              className="md:hidden flex items-center justify-center p-2 rounded-md text-primary focus:outline-none"
+              className={`md:hidden flex items-center justify-center p-2 rounded-md focus:outline-none ${
+                isScrolled || !isHomePage 
+                  ? 'text-primary' 
+                  : 'text-white/90 hover:text-white'
+              }`}
               onClick={toggleMenu}
               aria-label="Abrir menú"
             >
@@ -114,7 +136,7 @@ const Navigation = () => {
         </div>
       </nav>
       
-      {/* Menú para móvil mejorado */}
+      {/* Mobile Menu */}
       <MobileMenu 
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}

@@ -4,29 +4,38 @@ import { ShoppingBag, User, UserCog } from "lucide-react";
 
 interface DesktopMenuProps {
   showAdminLink: boolean;
+  isTransparent?: boolean;
 }
 
-const DesktopMenu = ({ showAdminLink }: DesktopMenuProps) => {
+const DesktopMenu = ({ showAdminLink, isTransparent = false }: DesktopMenuProps) => {
+  const linkBaseClasses = isTransparent 
+    ? "text-white/90 hover:text-white px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center"
+    : "text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary flex items-center";
+
+  const adminClasses = isTransparent
+    ? "text-white/90 hover:text-white px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center"
+    : "text-green-600 hover:text-green-700 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-green-600 flex items-center";
+
   return (
     <div className="hidden md:block desktop-menu">
       <div className="flex space-x-8">
         <Link
           to="/catalog"
-          className="text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary flex items-center"
+          className={linkBaseClasses}
         >
           <ShoppingBag className="h-4 w-4 mr-2" />
           Catálogo
         </Link>
         <Link
           to="/catalog/female"
-          className="text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary flex items-center"
+          className={linkBaseClasses}
         >
           <User className="h-4 w-4 mr-2" />
           Mujer
         </Link>
         <Link
           to="/catalog/male"
-          className="text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary flex items-center"
+          className={linkBaseClasses}
         >
           <User className="h-4 w-4 mr-2" />
           Hombre
@@ -34,7 +43,7 @@ const DesktopMenu = ({ showAdminLink }: DesktopMenuProps) => {
         {showAdminLink && (
           <Link
             to="/admin"
-            className="text-green-600 hover:text-green-700 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-green-600 flex items-center"
+            className={adminClasses}
           >
             <UserCog className="h-4 w-4 mr-2" />
             Administración
