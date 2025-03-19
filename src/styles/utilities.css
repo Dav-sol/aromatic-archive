@@ -13,3 +13,9 @@
   width: 90%;
   margin: 2rem auto;
 }
+
+/* Añadimos una clase de utilidad para el efecto de sombra en el texto */
+.shadow-text {
+  text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}

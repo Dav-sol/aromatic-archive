@@ -82,7 +82,7 @@ const Navigation = () => {
                 className={`text-xl sm:text-2xl font-elegant tracking-wide flex items-center ${
                   isScrolled || !isHomePage 
                     ? 'text-primary' 
-                    : 'text-white hover:text-white'
+                    : 'text-white shadow-text hover:text-white'
                 }`}
                 onClick={handleLogoClick}
               >
@@ -109,7 +109,7 @@ const Navigation = () => {
                   <TooltipTrigger asChild>
                     <div className="absolute top-4 right-20 md:right-4 flex items-center animate-pulse">
                       <ShieldCheck className={`h-5 w-5 ${
-                        !isScrolled && isHomePage ? 'text-white' : 'text-green-600'
+                        !isScrolled && isHomePage ? 'text-white shadow-text' : 'text-green-600'
                       }`} />
                     </div>
                   </TooltipTrigger>
@@ -125,7 +125,7 @@ const Navigation = () => {
               className={`md:hidden flex items-center justify-center p-2 rounded-md focus:outline-none ${
                 isScrolled || !isHomePage 
                   ? 'text-primary' 
-                  : 'text-white hover:text-white'
+                  : 'text-white shadow-text hover:text-white'
               }`}
               onClick={toggleMenu}
               aria-label="Abrir menú"
