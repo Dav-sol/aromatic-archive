@@ -12,7 +12,7 @@ const HeroFragrance = () => {
           alt="Fragancia de lujo" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/25"></div>
+        <div className="absolute inset-0 bg-black/10"></div>
       </div>
       
       {/* Contenido centrado */}
@@ -23,7 +23,7 @@ const HeroFragrance = () => {
         
         <div className="absolute bottom-20 w-full flex flex-col items-center">
           <Link to="/catalog">
-            <Button variant="outline" className="rounded-full bg-black/40 backdrop-blur-sm text-white border-white/20 hover:bg-black/60 px-8 py-6 text-lg">
+            <Button variant="outline" className="rounded-full bg-black/20 backdrop-blur-sm text-white border-white/20 hover:bg-black/40 px-8 py-6 text-lg">
               Explorar Colección
             </Button>
           </Link>
