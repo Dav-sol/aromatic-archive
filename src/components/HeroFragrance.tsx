@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const HeroFragrance = () => {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-gray-50">
+    <section className="relative h-screen w-full overflow-hidden">
       {/* Fondo de imagen a pantalla completa */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -12,22 +12,20 @@ const HeroFragrance = () => {
           alt="Fragancia de lujo" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 bg-black/30"></div>
       </div>
       
       {/* Contenido centrado */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
-        <h1 className="text-6xl md:text-8xl font-elegant text-white shadow-text tracking-wider mb-6">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+        <h1 className="text-7xl md:text-9xl font-elegant text-white shadow-text tracking-wider mb-10">
           Elegancia
         </h1>
         
-        <div className="absolute bottom-32 w-full flex flex-col items-center">
-          <Link to="/catalog">
-            <Button variant="outline" className="rounded-full bg-black/20 backdrop-blur-sm text-white border-white/20 hover:bg-black/40 px-8 py-6 text-lg">
-              Explorar Colección
-            </Button>
-          </Link>
-        </div>
+        <Link to="/catalog">
+          <Button variant="outline" className="rounded-full bg-black/30 backdrop-blur-sm text-white border-white/20 hover:bg-black/50 px-8 py-6 text-lg">
+            Explorar Colección
+          </Button>
+        </Link>
       </div>
     </section>
   );

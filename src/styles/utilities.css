@@ -16,6 +16,7 @@
 
 /* Mejoramos el efecto de sombra en el texto para mejor visibilidad */
 .shadow-text {
-  text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+  text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.8);
   font-weight: 700;
 }
+
