@@ -11,12 +11,12 @@ const DesktopMenu = ({ showAdminLink, isTransparent = false }: DesktopMenuProps)
   // Modificamos las clases para que siempre tengan una opacidad completa
   // y sean claramente visibles incluso contra fondos claros
   const linkBaseClasses = isTransparent 
-    ? "text-white font-semibold px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center shadow-text"
-    : "text-gray-700 hover:text-primary px-3 py-2 transition-colors border-b-2 border-transparent hover:border-primary flex items-center";
+    ? "text-white font-medium px-3 py-2 transition-colors flex items-center shadow-text"
+    : "text-gray-700 hover:text-primary px-3 py-2 transition-colors flex items-center";
 
   const adminClasses = isTransparent
-    ? "text-white font-semibold px-3 py-2 transition-colors border-b-2 border-transparent hover:border-white flex items-center shadow-text"
-    : "text-green-600 hover:text-green-700 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-green-600 flex items-center";
+    ? "text-white font-medium px-3 py-2 transition-colors flex items-center shadow-text"
+    : "text-green-600 hover:text-green-700 px-3 py-2 transition-colors flex items-center";
 
   return (
     <div className="hidden md:block desktop-menu">
